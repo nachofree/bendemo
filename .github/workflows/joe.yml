@@ -1,0 +1,20 @@
+  name: Build and Deploy Frontend and Backend
+  on: push
+  jobs:
+    backend-build:
+      runs-on: ubuntu-latest
+      steps:
+      - id: step1
+        run: echo 'backend is built and complete'
+    frontend-build:
+      runs-on: ubuntu-18.04
+      steps:
+      - uses: actions/checkout@v2
+
+    # Deploy the site with netlify-cli
+      - name: Deploy Site
+        env:
+          GITHUB_SHA: ${{ steps.vars.outputs.github_short_sha }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: netlify deploy --dir=. --prod --message "Deployed from GitHub Action sha $GITHUB_SHA ref ${{ steps.vars.outputs.short_ref }}"
